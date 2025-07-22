@@ -44,7 +44,7 @@ Implementação do Stock Car Game em C, no contexto da disciplina de Sistemas Em
 
 ### Bitmaps no Código
 
-Os **bitmaps necessários para o funcionamento do jogo** (carro principal, carro obstáculo, por exemplo) estão definidos diretamente no arquivo `main.c` como **vetores 5x7 em hexadecimal** do tipo `char`.
+Os **bitmaps necessários para o funcionamento do jogo** (carro principal, carro obstáculo, por exemplo) estão definidos diretamente no arquivo `main.c` como **vetores 6x8 em hexadecimal** do tipo `char`.
 
 A seguir, **exemplo** do bitmap do carro principal:
 
