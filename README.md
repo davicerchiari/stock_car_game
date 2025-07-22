@@ -25,8 +25,8 @@ Implementação do Stock Car Game em C, no contexto da disciplina de Sistemas Em
 - 📷 Imagens do jogo em execução:
 
 <p align="center">
-  <img src="images/proteus_esquematico.png" alt="Esquemático no Proteus" width="400"/>
-  <img src="images/execucao_jogo.jpeg" alt="Execução do jogo" width="400"/>
+  <img src="images/proteus_esquematico.png" alt="Esquemático no Proteus" width="350"/>
+  <img src="images/execucao_jogo.jpeg" alt="Execução do jogo" width="387"/>
 </p>
 
 - 🎥 [Vídeo de demonstração no Google Drive](https://drive.google.com/file/d/1NkgYkkuGQF219L9WAwvwzaGD4ysoCQrC/view)
