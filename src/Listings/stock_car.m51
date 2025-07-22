@@ -1,0 +1,553 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    07/22/2025  12:53:59  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj TO .\Objects\vai_dar PRINT (.\Listings\vai_dar.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDOPTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?SIDIV)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (RAND)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (ABS)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?UIDIV)
+
+
+LINK MAP OF MODULE:  .\Objects\vai_dar (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     003DH     UNIT         ?DT?MAIN
+            DATA    0045H     0012H     UNIT         _DATA_GROUP_
+            DATA    0057H     0004H     UNIT         ?DT?RAND?RAND
+            IDATA   005BH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     018EH     UNIT         ?PR?MAIN?MAIN
+            CODE    098EH     0146H     UNIT         ?PR?_GLCD_DISPLAYBITMAP?MAIN
+            CODE    0AD4H     013AH     UNIT         ?PR?_CHECK_COLLISION?MAIN
+            CODE    0C0EH     0126H     UNIT         ?PR?UPDATE_TRACK?MAIN
+            CODE    0D34H     00B8H     UNIT         ?C?LIB_CODE
+            CODE    0DECH     00A5H     UNIT         ?PR?GENERATE_OBSTACLES?MAIN
+            CODE    0E91H     00A3H     UNIT         ?PR?UPDATE_OBSTACLES?MAIN
+            CODE    0F34H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0FC0H     004DH     UNIT         ?PR?RAND?RAND
+            CODE    100DH     0040H     UNIT         ?C_INITSEG
+            CODE    104DH     0038H     UNIT         ?PR?GLCD_CLEARALL?MAIN
+            CODE    1085H     0032H     UNIT         ?CO?MAIN
+            CODE    10B7H     0031H     UNIT         ?PR?_GLCD_DATA?MAIN
+            CODE    10E8H     0024H     UNIT         ?PR?_DELAY?MAIN
+            CODE    110CH     001FH     UNIT         ?PR?SCANKEY?MAIN
+            CODE    112BH     001DH     UNIT         ?PR?GLCD_INIT?MAIN
+            CODE    1148H     001AH     UNIT         ?PR?INITIALIZE_TRACK?MAIN
+            CODE    1162H     0016H     UNIT         ?PR?_GLCD_COMMAND?MAIN
+            CODE    1178H     000CH     UNIT         ?PR?_ABS?ABS
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\vai_dar (MAIN)
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 2
+
+
+
+SEGMENT                                DATA_GROUP 
+  +--> CALLED SEGMENT                START    LENGTH
+----------------------------------------------------
+?C_C51STARTUP                        -----    -----
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN                        0045H    0005H
+  +--> ?PR?GLCD_INIT?MAIN
+  +--> ?PR?GLCD_CLEARALL?MAIN
+  +--> ?PR?SCANKEY?MAIN
+  +--> ?PR?_DELAY?MAIN
+  +--> ?PR?RAND?RAND
+  +--> ?PR?INITIALIZE_TRACK?MAIN
+  +--> ?PR?_GLCD_DISPLAYBITMAP?MAIN
+  +--> ?PR?_GLCD_COMMAND?MAIN
+  +--> ?PR?_GLCD_DATA?MAIN
+  +--> ?PR?UPDATE_TRACK?MAIN
+  +--> ?PR?GENERATE_OBSTACLES?MAIN
+  +--> ?PR?UPDATE_OBSTACLES?MAIN
+  +--> ?PR?_CHECK_COLLISION?MAIN
+
+?PR?GLCD_INIT?MAIN                   -----    -----
+  +--> ?PR?_DELAY?MAIN
+  +--> ?PR?_GLCD_COMMAND?MAIN
+
+?PR?GLCD_CLEARALL?MAIN               -----    -----
+  +--> ?PR?_GLCD_COMMAND?MAIN
+  +--> ?PR?_GLCD_DATA?MAIN
+
+?PR?_GLCD_DATA?MAIN                  -----    -----
+  +--> ?CO?MAIN
+
+?PR?SCANKEY?MAIN                     -----    -----
+  +--> ?PR?_DELAY?MAIN
+
+?PR?_GLCD_DISPLAYBITMAP?MAIN         004CH    000BH
+  +--> ?PR?_GLCD_COMMAND?MAIN
+  +--> ?PR?_GLCD_DATA?MAIN
+
+?PR?UPDATE_TRACK?MAIN                004AH    0002H
+  +--> ?PR?_GLCD_DISPLAYBITMAP?MAIN
+  +--> ?PR?RAND?RAND
+
+?PR?GENERATE_OBSTACLES?MAIN          004AH    0001H
+  +--> ?PR?RAND?RAND
+
+?PR?UPDATE_OBSTACLES?MAIN            004AH    0001H
+  +--> ?PR?_GLCD_DISPLAYBITMAP?MAIN
+
+?PR?_CHECK_COLLISION?MAIN            004AH    0009H
+  +--> ?PR?_ABS?ABS
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\vai_dar (MAIN)
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 3
+
+
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  C:104DH         PUBLIC        GLCD_ClearAll
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:0008H         PUBLIC        target_left_offset
+  D:0009H         PUBLIC        right_track_offset
+  D:000AH         PUBLIC        left_track_offset
+  C:112BH         PUBLIC        GLCD_Init
+  C:10ECH         PUBLIC        _delay
+  D:000BH         PUBLIC        empty_bitmap
+  D:0011H         PUBLIC        car_bitmap
+  D:0017H         PUBLIC        track_timer
+  B:0080H.1       PUBLIC        LINHA1
+  B:00A0H.0       PUBLIC        RS
+  C:0800H         PUBLIC        main
+  B:00A0H.1       PUBLIC        RW
+  C:110CH         PUBLIC        ScanKey
+  C:0AD4H         PUBLIC        _check_collision
+  C:0DECH         PUBLIC        Generate_Obstacles
+  C:09B4H         PUBLIC        _GLCD_DisplayBitmap
+  D:0018H         PUBLIC        enemy_car
+  C:1085H         PUBLIC        font
+  C:0C0EH         PUBLIC        Update_Track
+  C:116BH         PUBLIC        _GLCD_Command
+  B:00A0H.2       PUBLIC        E
+  D:001EH         PUBLIC        obstacles
+  B:00A0H.3       PUBLIC        CS1
+  B:00A0H.4       PUBLIC        CS2
+  D:0026H         PUBLIC        obstacle_timer
+  D:0027H         PUBLIC        track_segments
+  C:0E91H         PUBLIC        Update_Obstacles
+  D:0035H         PUBLIC        colisao
+  C:1148H         PUBLIC        Initialize_Track
+  B:0080H.4       PUBLIC        COLUNA0
+  B:0080H.6       PUBLIC        COLUNA2
+  D:0036H         PUBLIC        track_offsets
+  C:10DBH         PUBLIC        _GLCD_Data
+  D:003EH         PUBLIC        target_right_offset
+  D:003FH         PUBLIC        track_bitmap
+  B:00A0H.5       PUBLIC        RST
+  C:10E8H         SYMBOL        L?0135
+  -------         PROC          L?0134
+  -------         ENDPROC       L?0134
+  C:10E8H         SYMBOL        L?0135
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        k
+  -------         DO            
+  D:0004H         SYMBOL        i
+  D:0002H         SYMBOL        j
+  -------         ENDDO         
+  C:10ECH         LINE#         46
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 4
+
+
+  C:10ECH         LINE#         48
+  C:10F6H         LINE#         49
+  C:110BH         LINE#         50
+  -------         ENDPROC       _DELAY
+  C:1166H         SYMBOL        L?0133
+  -------         PROC          L?0132
+  -------         ENDPROC       L?0132
+  C:1166H         SYMBOL        L?0133
+  -------         PROC          _GLCD_COMMAND
+  D:0007H         SYMBOL        Command
+  C:116BH         LINE#         52
+  C:116BH         LINE#         53
+  C:116DH         LINE#         54
+  C:1177H         LINE#         55
+  -------         ENDPROC       _GLCD_COMMAND
+  C:10BBH         SYMBOL        L?0129
+  -------         PROC          L?0128
+  -------         ENDPROC       L?0128
+  C:10BBH         SYMBOL        L?0129
+  -------         PROC          _GLCD_DATA
+  D:0007H         SYMBOL        Data
+  C:10DBH         LINE#         57
+  C:10DBH         LINE#         58
+  C:10DDH         LINE#         59
+  C:10E7H         LINE#         60
+  -------         ENDPROC       _GLCD_DATA
+  -------         PROC          GLCD_INIT
+  C:112BH         LINE#         62
+  C:112BH         LINE#         63
+  C:112BH         LINE#         64
+  C:112FH         LINE#         65
+  C:1131H         LINE#         66
+  C:1134H         LINE#         67
+  C:1136H         LINE#         68
+  C:1139H         LINE#         69
+  C:113EH         LINE#         70
+  C:1143H         LINE#         71
+  -------         ENDPROC       GLCD_INIT
+  -------         PROC          GLCD_CLEARALL
+  -------         DO            
+  D:0006H         SYMBOL        page
+  D:0005H         SYMBOL        col
+  -------         ENDDO         
+  C:104DH         LINE#         74
+  C:104DH         LINE#         76
+  C:104FH         LINE#         77
+  C:1056H         LINE#         78
+  C:1061H         LINE#         79
+  C:1068H         LINE#         80
+  C:1073H         LINE#         81
+  C:1077H         LINE#         82
+  -------         ENDPROC       GLCD_CLEARALL
+  -------         PROC          SCANKEY
+  C:110CH         LINE#         85
+  C:110CH         LINE#         86
+  C:110EH         LINE#         87
+  C:1110H         LINE#         89
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 5
+
+
+  C:1113H         LINE#         90
+  C:1116H         LINE#         91
+  C:111CH         LINE#         92
+  C:111CH         LINE#         93
+  C:111FH         LINE#         94
+  C:1122H         LINE#         95
+  C:1128H         LINE#         96
+  C:1128H         LINE#         97
+  C:112AH         LINE#         98
+  -------         ENDPROC       SCANKEY
+  C:09AAH         SYMBOL        L?0131
+  -------         PROC          L?0130
+  -------         ENDPROC       L?0130
+  C:09AAH         SYMBOL        L?0131
+  -------         PROC          _GLCD_DISPLAYBITMAP
+  D:004CH         SYMBOL        bitmap
+  D:004FH         SYMBOL        width
+  D:0051H         SYMBOL        page
+  D:0053H         SYMBOL        col
+  -------         DO            
+  D:0055H         SYMBOL        i
+  D:0056H         SYMBOL        new_col
+  D:0007H         SYMBOL        threshold
+  -------         ENDDO         
+  C:09B4H         LINE#         100
+  C:09BEH         LINE#         102
+  C:09C1H         LINE#         104
+  C:09C3H         LINE#         106
+  C:09F4H         LINE#         107
+  C:09F7H         LINE#         108
+  C:09F9H         LINE#         109
+  C:0A1CH         LINE#         110
+  C:0A23H         LINE#         111
+  C:0A23H         LINE#         113
+  C:0A3DH         LINE#         114
+  C:0A41H         LINE#         115
+  C:0A49H         LINE#         116
+  C:0A51H         LINE#         118
+  C:0A6AH         LINE#         119
+  C:0A7FH         LINE#         120
+  C:0A83H         LINE#         121
+  C:0A83H         LINE#         122
+  C:0A8CH         LINE#         123
+  C:0A90H         LINE#         124
+  C:0A98H         LINE#         125
+  C:0A9DH         LINE#         127
+  C:0AB6H         LINE#         128
+  C:0ACBH         LINE#         129
+  C:0ACFH         LINE#         130
+  C:0ACFH         LINE#         132
+  C:0AD3H         LINE#         133
+  -------         ENDPROC       _GLCD_DISPLAYBITMAP
+  -------         PROC          GENERATE_OBSTACLES
+  -------         DO            
+  D:004AH         SYMBOL        i
+  -------         ENDDO         
+  C:0DECH         LINE#         147
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 6
+
+
+  C:0DECH         LINE#         150
+  C:0DF5H         LINE#         151
+  C:0E04H         LINE#         153
+  C:0E07H         LINE#         154
+  C:0E13H         LINE#         155
+  C:0E2CH         LINE#         157
+  C:0E31H         LINE#         158
+  C:0E3CH         LINE#         159
+  C:0E3CH         LINE#         160
+  C:0E57H         LINE#         161
+  C:0E62H         LINE#         162
+  C:0E62H         LINE#         164
+  C:0E6DH         LINE#         165
+  C:0E78H         LINE#         166
+  C:0E83H         LINE#         167
+  C:0E84H         LINE#         168
+  C:0E84H         LINE#         169
+  C:0E90H         LINE#         170
+  C:0E90H         LINE#         171
+  -------         ENDPROC       GENERATE_OBSTACLES
+  -------         PROC          UPDATE_OBSTACLES
+  -------         DO            
+  D:004AH         SYMBOL        i
+  -------         ENDDO         
+  C:0E91H         LINE#         173
+  C:0E91H         LINE#         176
+  C:0E94H         LINE#         177
+  C:0EA3H         LINE#         178
+  C:0EADH         LINE#         180
+  C:0EB3H         LINE#         181
+  C:0EBEH         LINE#         183
+  C:0EE8H         LINE#         185
+  C:0EF2H         LINE#         187
+  C:0EF9H         LINE#         188
+  C:0F1AH         LINE#         189
+  C:0F1CH         LINE#         190
+  C:0F27H         LINE#         191
+  C:0F27H         LINE#         192
+  C:0F27H         LINE#         193
+  C:0F27H         LINE#         194
+  C:0F33H         LINE#         195
+  -------         ENDPROC       UPDATE_OBSTACLES
+  -------         PROC          INITIALIZE_TRACK
+  -------         DO            
+  D:0007H         SYMBOL        i
+  -------         ENDDO         
+  C:1148H         LINE#         211
+  C:1148H         LINE#         213
+  C:114AH         LINE#         214
+  C:1155H         LINE#         215
+  C:115DH         LINE#         216
+  C:1161H         LINE#         217
+  -------         ENDPROC       INITIALIZE_TRACK
+  -------         PROC          UPDATE_TRACK
+  -------         DO            
+  D:004AH         SYMBOL        last_top_page
+  D:004BH         SYMBOL        i
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 7
+
+
+  -------         ENDDO         
+  C:0C0EH         LINE#         226
+  C:0C0EH         LINE#         227
+  C:0C11H         LINE#         228
+  C:0C14H         LINE#         230
+  C:0C20H         LINE#         231
+  C:0C23H         LINE#         233
+  C:0C25H         LINE#         234
+  C:0C2FH         LINE#         235
+  C:0C36H         LINE#         237
+  C:0C59H         LINE#         239
+  C:0C59H         LINE#         240
+  C:0C64H         LINE#         242
+  C:0C67H         LINE#         243
+  C:0C6FH         LINE#         245
+  C:0C77H         LINE#         246
+  C:0C80H         LINE#         248
+  C:0C8FH         LINE#         249
+  C:0C9EH         LINE#         251
+  C:0CADH         LINE#         253
+  C:0CADH         LINE#         254
+  C:0CB0H         LINE#         255
+  C:0CB0H         LINE#         256
+  C:0CB0H         LINE#         257
+  C:0CBBH         LINE#         259
+  C:0CCCH         LINE#         260
+  C:0CDBH         LINE#         262
+  C:0CECH         LINE#         263
+  C:0CFBH         LINE#         265
+  C:0CFEH         LINE#         266
+  C:0D05H         LINE#         268
+  C:0D28H         LINE#         270
+  C:0D33H         LINE#         271
+  C:0D33H         LINE#         272
+  -------         ENDPROC       UPDATE_TRACK
+  -------         PROC          _CHECK_COLLISION
+  D:004AH         SYMBOL        car_left
+  -------         DO            
+  D:0007H         SYMBOL        i
+  D:004CH         SYMBOL        page
+  D:0007H         SYMBOL        current_left_wall
+  D:004DH         SYMBOL        current_right_wall
+  D:004EH         SYMBOL        car_top_page
+  -------         DO            
+  D:004FH         SYMBOL        next_left_wall
+  D:0051H         SYMBOL        next_right_wall
+  -------         ENDDO         
+  -------         ENDDO         
+  C:0AD4H         LINE#         274
+  C:0AD8H         LINE#         278
+  C:0ADBH         LINE#         280
+  C:0ADDH         LINE#         281
+  C:0AE8H         LINE#         282
+  C:0B0CH         LINE#         283
+  C:0B42H         LINE#         284
+  C:0B42H         LINE#         285
+  C:0B45H         LINE#         286
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 8
+
+
+  C:0B45H         LINE#         287
+  C:0B45H         LINE#         288
+  C:0B45H         LINE#         289
+  C:0B4BH         LINE#         291
+  C:0B5EH         LINE#         292
+  C:0B63H         LINE#         293
+  C:0B69H         LINE#         295
+  C:0B9BH         LINE#         296
+  C:0B9BH         LINE#         297
+  C:0B9DH         LINE#         298
+  C:0B9DH         LINE#         300
+  C:0BA6H         LINE#         301
+  C:0BB6H         LINE#         302
+  C:0BC6H         LINE#         304
+  C:0C00H         LINE#         305
+  C:0C00H         LINE#         306
+  C:0C05H         LINE#         307
+  C:0C05H         LINE#         308
+  C:0C05H         LINE#         309
+  C:0C0AH         LINE#         310
+  C:0C0DH         LINE#         311
+  -------         ENDPROC       _CHECK_COLLISION
+  -------         PROC          MAIN
+  -------         DO            
+  D:0045H         SYMBOL        car_position
+  D:0046H         SYMBOL        car_width
+  D:0082H         SYMBOL        tempo_pressionado
+  D:0001H         SYMBOL        botao_pressionado
+  D:0047H         SYMBOL        key_pressed
+  D:0007H         SYMBOL        tecla
+  D:0003H         SYMBOL        col
+  D:0048H         SYMBOL        score
+  -------         ENDDO         
+  C:0800H         LINE#         313
+  C:0800H         LINE#         314
+  C:0803H         LINE#         315
+  C:0806H         LINE#         316
+  C:0809H         LINE#         317
+  C:080BH         LINE#         318
+  C:080DH         LINE#         321
+  C:0811H         LINE#         323
+  C:0814H         LINE#         324
+  C:0817H         LINE#         327
+  C:0817H         LINE#         328
+  C:081AH         LINE#         329
+  C:081DH         LINE#         330
+  C:0828H         LINE#         331
+  C:082AH         LINE#         332
+  C:082CH         LINE#         333
+  C:082FH         LINE#         334
+  C:082FH         LINE#         335
+  C:082FH         LINE#         336
+  C:082FH         LINE#         338
+  C:0836H         LINE#         339
+  C:0838H         LINE#         341
+  C:083FH         LINE#         342
+  C:0842H         LINE#         344
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 9
+
+
+  C:0862H         LINE#         346
+  C:0862H         LINE#         347
+  C:086AH         LINE#         348
+  C:086FH         LINE#         349
+  C:0873H         LINE#         350
+  C:0890H         LINE#         352
+  C:089EH         LINE#         353
+  C:08A0H         LINE#         354
+  C:08A2H         LINE#         355
+  C:08B0H         LINE#         356
+  C:08B6H         LINE#         357
+  C:08B6H         LINE#         359
+  C:08D3H         LINE#         360
+  C:08D7H         LINE#         361
+  C:08E6H         LINE#         362
+  C:08E6H         LINE#         363
+  C:08F5H         LINE#         364
+  C:08F9H         LINE#         365
+  C:08FEH         LINE#         366
+  C:0903H         LINE#         367
+  C:0904H         LINE#         368
+  C:091AH         LINE#         369
+  C:091CH         LINE#         370
+  C:093FH         LINE#         371
+  C:0941H         LINE#         372
+  C:0968H         LINE#         373
+  C:0968H         LINE#         374
+  C:096BH         LINE#         375
+  C:096EH         LINE#         376
+  C:0971H         LINE#         378
+  C:097FH         LINE#         379
+  C:0982H         LINE#         380
+  C:0984H         LINE#         381
+  C:0984H         LINE#         382
+  C:098BH         LINE#         383
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        ?C?CLDOPTR
+  C:0D34H         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
+  -------         MODULE        ?C?SIDIV
+  C:0D61H         PUBLIC        ?C?SIDIV
+  -------         ENDMOD        ?C?SIDIV
+
+  -------         MODULE        RAND
+  D:0057H         PUBLIC        ?SRAND?BYTE
+  C:0FC0H         PUBLIC        RAND
+  C:1002H         PUBLIC        _SRAND
+  -------         ENDMOD        RAND
+
+  -------         MODULE        ABS
+  C:1178H         PUBLIC        _ABS
+  -------         ENDMOD        ABS
+
+  -------         MODULE        ?C?UIDIV
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/22/2025  12:53:59  PAGE 10
+
+
+  C:0D97H         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 07E6H BYTE (98%) *
+******************************************************************************
+
+Program Size: data=92.0 xdata=0 code=2439
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

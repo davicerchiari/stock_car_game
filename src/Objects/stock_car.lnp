@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\vai_dar" 
+PRINT(".\Listings\vai_dar.m51") RAMSIZE(256) 

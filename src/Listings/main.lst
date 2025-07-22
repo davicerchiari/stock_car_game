@@ -1,0 +1,421 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              07/22/2025 12:53:59 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include <intrins.h>
+   3          #include <stdlib.h>
+   4          #include <font_header.h>
+   5          
+   6          #define Data_Port P3
+   7          
+   8          sbit RS = P2^0;                                 
+   9          sbit RW = P2^1;
+  10          sbit E = P2^2;
+  11          sbit CS1 = P2^3;
+  12          sbit CS2 = P2^4;
+  13          sbit RST = P2^5;
+  14          
+  15          sbit COLUNA2 = P0^6;
+  16          sbit COLUNA0 = P0^4;
+  17          sbit LINHA1  = P0^1;
+  18          
+  19          #define MAX_OBSTACLES 2
+  20          #define OBSTACLE_WIDTH 6
+  21          #define CAR_WIDTH 6
+  22          #define CAR_HEIGHT 1
+  23          #define LEFT_TRACK_BASE 10
+  24          #define RIGHT_TRACK_BASE 118
+  25          #define TRACK_WIDTH (RIGHT_TRACK_BASE - LEFT_TRACK_BASE)
+  26          #define OBSTACLE_GEN_DELAY 50
+  27          #define OBSTACLE_SPEED 7 
+  28          
+  29          typedef struct {
+  30              unsigned char x;
+  31              unsigned char page;
+  32              unsigned char active;
+  33              unsigned char speed_counter;
+  34          } Obstacle;
+  35          
+  36          Obstacle obstacles[2];
+  37          unsigned char obstacle_timer = 15;
+  38          
+  39          char colisao = 0;
+  40          char empty_bitmap[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  41          
+  42          char car_bitmap[6] = {0xC3, 0xFF, 0x66, 0x66, 0xFF, 0xC3};
+  43          
+  44          char enemy_car[6] = {0xC3, 0xC3, 0x5A, 0x5A, 0xC3, 0xC3};
+  45          
+  46          void delay(unsigned int k) {
+  47   1          unsigned int i, j;
+  48   1          for (i = 0; i < k; i++)
+  49   1              for (j = 0; j < 112; j++);
+  50   1      }
+  51          
+  52          void GLCD_Command(char Command) {
+  53   1          Data_Port = Command;
+  54   1          RS = 0; RW = 0; E = 1; _nop_(); E = 0; _nop_();
+C51 COMPILER V9.60.7.0   MAIN                                                              07/22/2025 12:53:59 PAGE 2   
+
+  55   1      }
+  56          
+  57          void GLCD_Data(char Data) {
+  58   1          Data_Port = Data;
+  59   1          RS = 1; RW = 0; E = 1; _nop_(); E = 0; _nop_();
+  60   1      }
+  61          
+  62          void GLCD_Init()
+  63          {
+  64   1        CS1 = 1; CS2 = 1;                           
+  65   1        RST = 1;                                  
+  66   1        delay(20);
+  67   1        GLCD_Command(0x3E);
+  68   1        GLCD_Command(0x40);
+  69   1        GLCD_Command(0xB8);
+  70   1        GLCD_Command(0xC0);
+  71   1        GLCD_Command(0x3F);
+  72   1      }
+  73          
+  74          void GLCD_ClearAll() {
+  75   1          char page, col;
+  76   1          for (page = 0; page < 8; page++) {
+  77   2              CS1 = 0; CS2 = 1; GLCD_Command(0xB8 + page); GLCD_Command(0x40);
+  78   2              for (col = 0; col < 64; col++) GLCD_Data(0x00);
+  79   2              CS1 = 1; CS2 = 0; GLCD_Command(0xB8 + page); GLCD_Command(0x40);
+  80   2              for (col = 0; col < 64; col++) GLCD_Data(0x00);
+  81   2          }
+  82   1          CS1 = 1; CS2 = 1; GLCD_Command(0xB8); GLCD_Command(0x40);
+  83   1      }
+  84          
+  85          char ScanKey() {
+  86   1          LINHA1 = 0;
+  87   1          _nop_(); _nop_();
+  88   1          
+  89   1          if (!COLUNA0) {
+  90   2              delay(20);
+  91   2              if (!COLUNA0) return '4';
+  92   2          }
+  93   1          if (!COLUNA2) {
+  94   2              delay(20);
+  95   2              if (!COLUNA2) return '6';
+  96   2          }
+  97   1          return 0;
+  98   1      }
+  99          
+ 100          void GLCD_DisplayBitmap(const unsigned char *bitmap, int width, int page, int col) {
+ 101   1          char i;
+ 102   1          char new_col = col;
+ 103   1          
+ 104   1          char threshold = 3; 
+ 105   1          
+ 106   1          if (col >= (64 - width + threshold) && col < 64) {
+ 107   2              new_col = 64;
+ 108   2          }
+ 109   1          else if (col >= 64 && col < (64 + threshold)) {
+ 110   2              new_col = 64 - width;
+ 111   2          }
+ 112   1          
+ 113   1          if (new_col + width <= 64) {
+ 114   2              CS1 = 1; CS2 = 0; 
+ 115   2              GLCD_Command(0xB8 + page);
+ 116   2              GLCD_Command(0x40 + new_col);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/22/2025 12:53:59 PAGE 3   
+
+ 117   2              
+ 118   2              for(i = 0; i < width; i++) {
+ 119   3                  GLCD_Data(bitmap[i]);
+ 120   3              }
+ 121   2          }
+ 122   1          else if (new_col >= 64) {
+ 123   2              CS1 = 0; CS2 = 1; 
+ 124   2              GLCD_Command(0xB8 + page);
+ 125   2              GLCD_Command(0x40 + (new_col - 64));
+ 126   2              
+ 127   2              for(i = 0; i < width; i++) {
+ 128   3                  GLCD_Data(bitmap[i]);
+ 129   3              }
+ 130   2          }
+ 131   1          
+ 132   1          CS1 = 1; CS2 = 1;
+ 133   1      }
+ 134          
+ 135          const char track_offsets[8] = {0,0,0,0,0,0,0,0};
+ 136          
+ 137          #define FIRST_OBSTACLE_PAGE 1 
+ 138          #define LAST_PAGE 7        
+ 139          #define LEFT_TRACK_START 32 
+ 140          #define LEFT_TRACK_END 38      
+ 141          #define RIGHT_TRACK_START 88  
+ 142          #define RIGHT_TRACK_END 94     
+ 143          #define TRACK_INNER_LEFT 38   
+ 144          #define TRACK_INNER_RIGHT 88   
+ 145          #define TRACK_HEIGHT 7        
+ 146          
+ 147          void Generate_Obstacles() {
+ 148   1          unsigned char i;
+ 149   1          
+ 150   1          if (--obstacle_timer == 0) {
+ 151   2              obstacle_timer = OBSTACLE_GEN_DELAY + (rand() % 15);
+ 152   2              
+ 153   2              for (i = 0; i < MAX_OBSTACLES; i++) {
+ 154   3                  if (!obstacles[i].active) {
+ 155   4                      obstacles[i].x = TRACK_INNER_LEFT + 2 + (rand() % (TRACK_INNER_RIGHT - TRACK_INNER_LEFT - 
+             -OBSTACLE_WIDTH - 4));
+ 156   4                      
+ 157   4                      if (obstacles[i].x < TRACK_INNER_LEFT + 2) {
+ 158   5                          obstacles[i].x = TRACK_INNER_LEFT + 2;
+ 159   5                      }
+ 160   4                      if (obstacles[i].x + OBSTACLE_WIDTH > TRACK_INNER_RIGHT - 2) {
+ 161   5                          obstacles[i].x = TRACK_INNER_RIGHT - OBSTACLE_WIDTH - 2;
+ 162   5                      }
+ 163   4                      
+ 164   4                      obstacles[i].page = 1;
+ 165   4                      obstacles[i].active = 1;
+ 166   4                      obstacles[i].speed_counter = 0;
+ 167   4                      break;
+ 168   4                  }
+ 169   3              }
+ 170   2          }
+ 171   1      }
+ 172          
+ 173          void Update_Obstacles() {
+ 174   1          unsigned char i;
+ 175   1          
+ 176   1          for (i = 0; i < MAX_OBSTACLES; i++) {
+ 177   2              if (obstacles[i].active) {
+C51 COMPILER V9.60.7.0   MAIN                                                              07/22/2025 12:53:59 PAGE 4   
+
+ 178   3                  obstacles[i].speed_counter++;
+ 179   3                  
+ 180   3                  if (obstacles[i].speed_counter >= OBSTACLE_SPEED) {
+ 181   4                      obstacles[i].speed_counter = 0;
+ 182   4                      
+ 183   4                      GLCD_DisplayBitmap(empty_bitmap, OBSTACLE_WIDTH, obstacles[i].page, obstacles[i].x);
+ 184   4                      
+ 185   4                      obstacles[i].page++;
+ 186   4                      
+ 187   4                      if (obstacles[i].page <= LAST_PAGE) {
+ 188   5                          GLCD_DisplayBitmap(enemy_car, OBSTACLE_WIDTH, obstacles[i].page, obstacles[i].x);
+ 189   5                      } else {
+ 190   5                          obstacles[i].active = 0;
+ 191   5                      }
+ 192   4                  }
+ 193   3              }
+ 194   2          }
+ 195   1      }
+ 196          
+ 197          #define TRACK_SPEED 25
+ 198          #define LEFT_TRACK_COL 32 
+ 199          #define RIGHT_TRACK_COL 88
+ 200          
+ 201          typedef struct {
+ 202              char page;                 
+ 203              unsigned char active;      
+ 204          } TrackSegment;
+ 205          
+ 206          TrackSegment track_segments[TRACK_HEIGHT];
+ 207          unsigned char track_timer = 0;
+ 208          
+ 209          const unsigned char track_bitmap[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; 
+ 210          
+ 211          void Initialize_Track() {
+ 212   1          char i;
+ 213   1          for(i = 0; i < TRACK_HEIGHT; i++) {
+ 214   2              track_segments[i].page = i + 1; 
+ 215   2              track_segments[i].active = 1;
+ 216   2          }
+ 217   1      }
+ 218          
+ 219          #define MAX_TRACK_SHIFT 10
+ 220          
+ 221          char left_track_offset = 0; 
+ 222          char right_track_offset = 0;
+ 223          char target_left_offset = 0;
+ 224          char target_right_offset = 0; 
+ 225          
+ 226          void Update_Track() {
+ 227   1          char last_top_page = -1;
+ 228   1          char i = 0;
+ 229   1          
+ 230   1          if(++track_timer >= TRACK_SPEED) {
+ 231   2              track_timer = 0;
+ 232   2              
+ 233   2              for(i = 0; i < TRACK_HEIGHT; i++) {
+ 234   3                  if(track_segments[i].active) {
+ 235   4                      GLCD_DisplayBitmap(empty_bitmap, 1, track_segments[i].page, 
+ 236   4                                       LEFT_TRACK_COL + left_track_offset);
+ 237   4                      GLCD_DisplayBitmap(empty_bitmap, 1, track_segments[i].page, 
+ 238   4                                       RIGHT_TRACK_COL + right_track_offset);
+ 239   4                  }
+C51 COMPILER V9.60.7.0   MAIN                                                              07/22/2025 12:53:59 PAGE 5   
+
+ 240   3              }
+ 241   2              
+ 242   2              for(i = 0; i < TRACK_HEIGHT; i++) {
+ 243   3                  track_segments[i].page++;
+ 244   3                  
+ 245   3                  if(track_segments[i].page > 7) {
+ 246   4                      track_segments[i].page = 1;
+ 247   4                      
+ 248   4                      target_left_offset = (rand() % (2*MAX_TRACK_SHIFT + 1)) - MAX_TRACK_SHIFT;
+ 249   4                      target_right_offset = (rand() % (2*MAX_TRACK_SHIFT + 1)) - MAX_TRACK_SHIFT;
+ 250   4                      
+ 251   4                      if((RIGHT_TRACK_COL + target_right_offset) - 
+ 252   4                         (LEFT_TRACK_COL + target_left_offset) != 
+ 253   4                         (RIGHT_TRACK_COL - LEFT_TRACK_COL)) {
+ 254   5                          target_right_offset = target_left_offset;
+ 255   5                      }
+ 256   4                  }
+ 257   3              }
+ 258   2              
+ 259   2              if(left_track_offset < target_left_offset) left_track_offset++;
+ 260   2              else if(left_track_offset > target_left_offset) left_track_offset--;
+ 261   2              
+ 262   2              if(right_track_offset < target_right_offset) right_track_offset++;
+ 263   2              else if(right_track_offset > target_right_offset) right_track_offset--;
+ 264   2              
+ 265   2              for(i = 0; i < TRACK_HEIGHT; i++) {
+ 266   3                  GLCD_DisplayBitmap(track_bitmap, 1, track_segments[i].page, 
+ 267   3                                   LEFT_TRACK_COL + left_track_offset);
+ 268   3                  GLCD_DisplayBitmap(track_bitmap, 1, track_segments[i].page, 
+ 269   3                                   RIGHT_TRACK_COL + right_track_offset);
+ 270   3              }
+ 271   2          }
+ 272   1      }
+ 273          
+ 274          int check_collision(int car_left) {
+ 275   1          unsigned char i;
+ 276   1          char page;
+ 277   1          char current_left_wall, current_right_wall;
+ 278   1          char car_top_page = 7 - CAR_HEIGHT + 1;
+ 279   1          
+ 280   1          for(i = 0; i < MAX_OBSTACLES; i++) {
+ 281   2              if(obstacles[i].active) {
+ 282   3                  if(obstacles[i].page >= car_top_page && obstacles[i].page <= 7) {
+ 283   4                      if(!(obstacles[i].x + OBSTACLE_WIDTH < car_left || 
+ 284   4                           obstacles[i].x > car_left + CAR_WIDTH)) {
+ 285   5                          return 1;
+ 286   5                      }
+ 287   4                  }
+ 288   3              }
+ 289   2          }
+ 290   1          
+ 291   1          for(page = 7; page >= car_top_page; page--) {
+ 292   2              current_left_wall = LEFT_TRACK_COL + left_track_offset + 6; 
+ 293   2              current_right_wall = RIGHT_TRACK_COL + right_track_offset - 6;
+ 294   2              
+ 295   2              if((car_left < current_left_wall) || 
+ 296   2                 (car_left + CAR_WIDTH > current_right_wall)) {
+ 297   3                  return 1;
+ 298   3              }
+ 299   2              
+ 300   2              if(page < 7) {
+ 301   3                  int next_left_wall = LEFT_TRACK_COL + left_track_offset + 6;
+C51 COMPILER V9.60.7.0   MAIN                                                              07/22/2025 12:53:59 PAGE 6   
+
+ 302   3                  int next_right_wall = RIGHT_TRACK_COL + right_track_offset - 6;
+ 303   3                  
+ 304   3                  if(abs(current_left_wall - next_left_wall) > 2 || 
+ 305   3                     abs(current_right_wall - next_right_wall) > 2) {
+ 306   4                      return 1; 
+ 307   4                  }
+ 308   3              }
+ 309   2          }
+ 310   1          return 0; 
+ 311   1      }
+ 312          
+ 313          void main() {   
+ 314   1          char car_position = 63;
+ 315   1          const char car_width = 6;
+ 316   1          int tempo_pressionado = 0;
+ 317   1          char botao_pressionado = 0;
+ 318   1          char key_pressed = 0;
+ 319   1          char tecla;
+ 320   1          char col;
+ 321   1          int score = 0;
+ 322   1      
+ 323   1          GLCD_Init();
+ 324   1          GLCD_ClearAll();
+ 325   1      
+ 326   1          //TELA INICIAL
+ 327   1          while (1) {
+ 328   2              tecla = ScanKey();
+ 329   2              if (tecla == '4') {
+ 330   3                  tempo_pressionado += 100;
+ 331   3                  botao_pressionado = 1;
+ 332   3              } else {
+ 333   3                  if (botao_pressionado) {
+ 334   4                      break;
+ 335   4                  }
+ 336   3              }
+ 337   2              
+ 338   2              delay(100);
+ 339   2          }
+ 340   1          
+ 341   1          srand(tempo_pressionado);
+ 342   1          Initialize_Track();
+ 343   1            
+ 344   1          GLCD_DisplayBitmap(car_bitmap, car_width, 7, car_position);
+ 345   1               
+ 346   1          while(1) {
+ 347   2              score++;
+ 348   2              key_pressed = ScanKey();
+ 349   2              if(key_pressed != 0) {
+ 350   3                  GLCD_DisplayBitmap(empty_bitmap, CAR_WIDTH, 7, car_position);
+ 351   3                  
+ 352   3                  if(key_pressed == '4' && car_position > TRACK_INNER_LEFT) {
+ 353   4                      car_position -= 6;
+ 354   4                  }
+ 355   3                  else if(key_pressed == '6' && car_position < TRACK_INNER_RIGHT - CAR_WIDTH) {
+ 356   4                      car_position += 6;
+ 357   4                  }
+ 358   3                  
+ 359   3                  GLCD_DisplayBitmap(car_bitmap, CAR_WIDTH, 7, car_position);
+ 360   3                  delay(50);
+ 361   3                  while(ScanKey() != 0) delay(10);
+ 362   3              }
+ 363   2              if (score % 20 == 0){
+C51 COMPILER V9.60.7.0   MAIN                                                              07/22/2025 12:53:59 PAGE 7   
+
+ 364   3                  CS1 = 0; CS2 = 1;
+ 365   3                  GLCD_Command(0xB8);
+ 366   3                  GLCD_Command(0x40 + 45);
+ 367   3                  for (col = 0; col < 5; col++)
+ 368   3                      GLCD_Data(font[(score/10)/100][col]);
+ 369   3                  for (col = 0; col < 5; col++)
+ 370   3                      GLCD_Data(font[((score/10) % 100)/10][col]);
+ 371   3                  for (col = 0; col < 5; col++)
+ 372   3                      GLCD_Data(font[(((score/10) % 100)%10)][col]);
+ 373   3              }
+ 374   2              Update_Track();
+ 375   2              Generate_Obstacles();
+ 376   2              Update_Obstacles();
+ 377   2              
+ 378   2              if(check_collision(car_position)) {
+ 379   3                  GLCD_ClearAll();
+ 380   3                  while(1);
+ 381   3              }
+ 382   2              delay(30);
+ 383   2          }
+ 384   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1909    ----
+   CONSTANT SIZE    =     50    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     61      29
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
